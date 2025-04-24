@@ -1,23 +1,42 @@
 #include <iostream>
-#include <fstream>/*读取文件*/
-#include <vector> /*数组*/
-#include <sstream>
-#include <iomanip>
-using namespace std;/*简化命名*/
-/// @brief 
-class main
-{
-private:
-    /* data */
-public:
-    main(/* args */);
-    ~main();
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class LogScanner{
+  private:
+    vector<string> alertKeywords;
+  public:
+    LogScanner():alertKeywords({"ERROR","WARN","FATAL","DEBUG"}){ }
+    void scanFile(const string& filename) {   
+        ifstream file;
+        file.open(filename);
+        if (!file) {
+            cerr << "Error: Unable to open file " << filename << endl;
+            return;
+        }
+        string line;
+        
+        while (getline(file, line)) {
+            
+            for (const auto& keyword : alertKeywords) {
+                if (line.find(keyword) != string::npos) {
+                    cout << "ALERT: " << line << endl;
+                    break;
+                }
+            }
+        }
+        file.close();
+    }    
 };
 
-main::main(/* args */)
-{
-}
-
-main::~main()
-{
+int main() {
+    string filename;
+    cout << "Enter the path to the log file: ";
+    cin >> filename;
+    cout << "Scanning log file for dangerous keywords..." << endl;
+    LogScanner scanner; 
+    scanner.scanFile(filename);
+    return 0;
 }
