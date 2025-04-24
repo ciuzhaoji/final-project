@@ -4,7 +4,6 @@
 #include <sstream>
 #include <iomanip>
 using namespace std;/*简化命名*/
-
 /// @brief 
 class main
 {
