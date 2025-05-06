@@ -10,20 +10,25 @@ class LogScanner{//定义LogScanner类
   public:
     LogScanner():alertKeywords({"ERROR","WARN","FATAL","DEBUG"}){ }//初始化alertKeywords关键字列表
     void scanFile(const string& filename) { 
-        ifstream file;//读取文件
-        file.open(filename);//打开文件
-        if (!file) {
+        ifstream file(filename);//读取文件
+        if (!file.is_open()) {
             cerr << "Error: Unable to open file " << filename << endl;//查找不到文件时报错
             return;
         }
         string line;
+        int lineNum = 0;
         while (getline(file, line)) {//逐行读取文件
-            
+            lineNum++;
+            bool alertTriggered = false;
             for (const auto& keyword : alertKeywords) {//查找警报关键字
                 if (line.find(keyword) != string::npos) {//查找到每行的最后一个字符串
-                    cout << "ALERT: " << line << endl;//发现关键字，将该行完整打印
+                    alertTriggered = true;
                     break;
                 }
+            }
+            if(alertTriggered){
+                cout << "ALERT:Line " << lineNum << ":" << endl;//发现关键字，将该行完整打印
+            
             }
         }
         file.close();//关闭文件
